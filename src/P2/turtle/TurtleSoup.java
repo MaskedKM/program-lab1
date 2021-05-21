@@ -64,7 +64,6 @@ public class TurtleSoup {
      */
     public static void drawRegularPolygon(Turtle turtle, int sides, int sideLength) {
         double angle = 180 - calculateRegularPolygonAngle(sides);
-        turtle.turn(360 - angle);
     	for(int i = 0; i < sides; i++) {
     		turtle.forward(sideLength);
     		turtle.turn(angle);
@@ -93,7 +92,10 @@ public class TurtleSoup {
      */
     public static double calculateBearingToPoint(double currentBearing, int currentX, int currentY,
                                                  int targetX, int targetY) {
-        throw new RuntimeException("implement me!");
+        double angle = Math.atan2((targetX - currentX),(targetY - currentY)) * 180 / Math.PI;
+        angle = angle - currentBearing;
+        angle = (angle + 360) % 360;
+    	return angle;
     }
 
     /**
@@ -111,7 +113,12 @@ public class TurtleSoup {
      *         otherwise of size (# of points) - 1
      */
     public static List<Double> calculateBearings(List<Integer> xCoords, List<Integer> yCoords) {
-        throw new RuntimeException("implement me!");
+        List<Double> result = new ArrayList<>();
+        result.add(calculateBearingToPoint(0, xCoords.get(0), yCoords.get(0), xCoords.get(1), yCoords.get(1)));
+        for (int i = 1; i < xCoords.size() - 1; i++) {
+        	result.add(calculateBearingToPoint(result.get(i - 1), xCoords.get(i), yCoords.get(i), xCoords.get(i + 1), yCoords.get(i + 1)));
+		}
+        return result;
     }
     
     /**
