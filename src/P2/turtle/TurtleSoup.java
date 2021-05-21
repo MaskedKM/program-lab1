@@ -5,7 +5,11 @@ package P2.turtle;
 
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.DoubleToLongFunction;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 
 public class TurtleSoup {
 
@@ -50,7 +54,7 @@ public class TurtleSoup {
      * @return the integer number of sides
      */
     public static int calculatePolygonSidesFromAngle(double angle) {
-        throw new RuntimeException("implement me!");
+        return (int)Math.round(360.0/(180.0 - angle));
     }
 
     /**
@@ -130,7 +134,58 @@ public class TurtleSoup {
      * @return minimal subset of the input points that form the vertices of the perimeter of the convex hull
      */
     public static Set<Point> convexHull(Set<Point> points) {
-        throw new RuntimeException("implement me!");
+        Set<Point> result = new HashSet<Point>();
+        int n = points.size();
+ 
+        if (n <= 2) return points;
+        
+        boolean[] visited = new boolean[n];
+        Point[] p = points.toArray(new Point[n]);
+        double tempx = p[0].x();
+        int fpindex = 0;
+        int nextp;
+        for (int i = 0; i < n; i++) {
+			if (p[i].x() < tempx || (p[i].x() == tempx && p[i].y() < p[fpindex].y())) {
+				tempx = p[i].x();
+				fpindex = i;
+			}
+		}
+        
+        int endp = fpindex;
+        double currentBearing = 0.0;
+        do {
+            double minangle = 360.0;
+        	nextp = fpindex;
+        	for (int i = 0; i < n; i++) {
+				if (i != fpindex) {
+					double angle = calculateBearingToPoint(currentBearing, (int)p[fpindex].x(), (int)p[fpindex].y(), (int)p[i].x(), (int)p[i].y());
+					if (!visited[i]) {
+						if (angle <minangle) {
+							minangle = angle;
+							nextp = i;
+						}
+						else if (angle == minangle) {
+							double dis1 = Math.pow(p[i].x() - p[fpindex].x(), 2) + Math.pow(p[i].y() - p[fpindex].y(), 2);
+							double dis2 = Math.pow(p[nextp].x() - p[fpindex].x(), 2) + Math.pow(p[nextp].y() - p[fpindex].y(), 2);
+							if(dis1 > dis2) {
+								nextp = i;
+							}
+						} 
+					}
+				}
+			}
+        	currentBearing = (currentBearing + minangle) % 360;
+        	fpindex = nextp;
+        	visited[nextp] = true;
+        }while(endp != fpindex);
+        visited[endp] = true;
+        for (int i = 0; i < n; i++) {
+			if (visited[i]) {
+				result.add(p[i]);
+			}
+		}
+		return result;
+        
     }
     
     /**
