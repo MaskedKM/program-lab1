@@ -84,6 +84,7 @@ public class MagicSquare {
 		}
 		FileOutputStream of1 = new FileOutputStream(f1);
 		
+		//生成指定阶数幻方
 		int magic[][] = new int[n][n];
 		int row = 0, col = n / 2, i, j, square = n * n;
 		String temp = null;
@@ -102,6 +103,8 @@ public class MagicSquare {
 					col++;
 			}
 		}
+		
+		//逐行输出至文件
 		for (i = 0; i < n; i++) {
 			temp = "";
 			for (j = 0; j < n-1; j++) {

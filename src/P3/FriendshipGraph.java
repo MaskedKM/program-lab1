@@ -15,31 +15,51 @@ public class FriendshipGraph {
 		return pList;
 	}
 	
+	/**
+     * 添加一个人.
+     * 
+     * @param p the Person context
+     */
 	public void addVertex(Person p) {
 		for (int i = 0; i < pList.size(); i++) {
 			if (p.getName().equals(pList.get(i).getName())) {
 				System.out.println("名字重复！");
-				return ;
+				System.exit(0);
 			}
 		}
 		pList.add(p);
 	}
 	
+	/**
+     * 添加一条边.
+     * 
+     * @param p1 起始的人
+     * @param p2 指向的人
+     */
 	public void addEdge(Person p1, Person p2) {
 		p1.addFriend(p2);
 	}
 	
+	/**
+     * 获取两人间的距离.
+     * 
+     * @param p1 起始的人
+     * @param p2 目标的人
+     */
 	public int getDistance(Person p1, Person p2) {
+		
+		//p1和p2重合的情况
 		if (p1 == p2) {
 			return 0;
 		}
-		
-		Queue<Person> q = new LinkedList<Person>();
-		Set<Person> visited = new HashSet<Person>();
+				
+		Queue<Person> q = new LinkedList<Person>(); //通过队列存储
+		Set<Person> visited = new HashSet<Person>(); //判断是否访问过
 		q.offer(p1);
 		visited.add(p1);
 		int step = 0;
 		
+		//BFS算法
 		while(!q.isEmpty()) {
 			int n = q.size();
 			
@@ -60,6 +80,7 @@ public class FriendshipGraph {
 			step++;
 		}
 		
+		//p1不能到达p2
 		return -1;
 		
 	}
@@ -72,10 +93,11 @@ public class FriendshipGraph {
 		Person ben = new Person("Ben");
 		Person kramer = new Person("Kramer");
 		graph.addVertex(rachel);
-		graph.addVertex(ross);
+		graph.addVertex(rachel);
+		//graph.addVertex(ross);
 		graph.addVertex(ben);
 		graph.addVertex(kramer);
-		graph.addEdge(rachel, ross);
+		//graph.addEdge(rachel, ross);
 		graph.addEdge(ross, rachel);
 		graph.addEdge(ross, ben);
 		graph.addEdge(ben, ross);
